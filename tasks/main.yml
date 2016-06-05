@@ -1,0 +1,24 @@
+---
+- name: Download package
+  get_url:
+    url={{ vagrant_package_url }}
+    dest={{ vagrant_package_tmp }}
+    force=no
+    validate_certs=no
+  tags: package
+
+- name: Install package
+  become: true
+  yum:
+    name={{ vagrant_package_tmp }}
+    state=present
+  when: ansible_os_family == 'RedHat'
+  tags: package
+
+- name: Install package
+  become: true
+  apt:
+    deb={{ vagrant_package_tmp }}
+    state=installed
+  when: ansible_os_family == 'Debian'
+  tags: package
